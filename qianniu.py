@@ -24,21 +24,19 @@
  * 　　　　 ┃┫┫　 ┃┫┫
  * 　　　　 ┗┻┛　 ┗┻┛
 """
-import json
 import os
 import random
 from time import sleep
 
-import requests
 from selenium import webdriver
 from selenium.common import ElementClickInterceptedException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
-from log import Log
 from excel import Excel
+from log import Log
 
 
 class Qianniu:
@@ -48,11 +46,14 @@ class Qianniu:
     # 下载路径
     download = ''
 
+    def __init__(self):
+        self.driver = None
+
     def create_driver(self, time):
-        '''
+        """
         创建driver
         :return: driver
-        '''
+        """
         chrome_options = webdriver.ChromeOptions()
         prefs = {'profile.default_content_settings.popups': 0, 'download.default_directory': self.download}
         self.log.info(messages=f'下载位置{self.download}')
@@ -74,13 +75,12 @@ class Qianniu:
         self.driver.get(url)
 
     def login(self, account, passwd):
-        '''
+        """
         登录
-        :param driver: 浏览器驱动
         :param account: 账号
         :param passwd: 密码
         :return:
-        '''
+        """
 
         # url = 'https://loginmyseller.taobao.com/?from=&f=top&style=&sub=true&redirect_url=https%3A%2F%2Fmyseller.taobao.com%2Fhome.htm%2FQnworkbenchHome%2F'
         # self.driver.get(url)
@@ -130,7 +130,7 @@ class Qianniu:
             slider = self.driver.find_element(By.XPATH, '/html/body/center/div[1]/div/div/div/div[2]/span').text
             self.log.info(messages=f'{account}--出现滑动验证码')
             if slider == '向右滑动验证':
-                self.crack(self.driver, slider, 390.4)
+                self.crack(slider, 390.4)
                 # 点击登录
                 self.driver.find_element(By.XPATH, '//div[@class="fm-btn"]/button').click()
         except Exception:
@@ -146,7 +146,7 @@ class Qianniu:
                     EC.visibility_of_element_located((By.XPATH, '//*[@id="btn-submit"]')))
                 # sleep(2)
                 # self.driver.find_element(By.XPATH, '//*[@id="J_GetCode"]').click()
-                self.log.info(messages=f'{account}--验证码已发送')
+                self.log.info(messages=f'{account}--输入验证码')
                 sleep(5)
 
                 # # 是否点击确定进入主页
@@ -156,7 +156,7 @@ class Qianniu:
                 # except Exception:
                 #     self.log.info(messages='验证失败')
                 #     sleep(60)
-            except Exception as e:
+            except Exception:
                 self.log.info(messages=f'{account}--无需验证码')
 
             # # 是否进入主页
@@ -167,15 +167,14 @@ class Qianniu:
         return account_state
 
     def get_info(self, account, start_time, end_time, account_state):
-        '''
+        """
         解析生意参谋数据
         :param account: 账号
-        :param driver: 浏览器驱动
         :param start_time: 起始时间
         :param end_time: 结束时间
         :param account_state: 账号状态
         :return:
-        '''
+        """
         if account_state != '正常':
             return 0, '数据权限未开通', '订单权限未开通'
 
@@ -290,7 +289,7 @@ class Qianniu:
         return total_money, data_state, order_state
 
     def parse_excel(self, filename, account, passwd, sum_money, account_state, order_state, data_state):
-        '''
+        """
         解析excel文件
         :param filename: 文件路径
         :param account: 账号
@@ -300,7 +299,7 @@ class Qianniu:
         :param order_state: 订单状态
         :param data_state: 数据状态
         :return:
-        '''
+        """
         file = ''
         if account_state == '正常':
             # 获取最新下载的文件
@@ -336,11 +335,11 @@ class Qianniu:
         self.driver.quit()
 
     def get_track(self, distance):
-        '''
+        """
         根据偏移量获取移动轨迹
         :param distance:
         :return:
-        '''
+        """
         # 移动轨迹
         track_x = []
         track_y = []
