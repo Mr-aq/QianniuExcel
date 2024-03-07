@@ -46,6 +46,9 @@ class Qianniu:
     # 下载路径
     download = ''
 
+    def __init__(self):
+        self.driver = None
+
     def create_driver(self, time):
         """
         创建driver
@@ -79,9 +82,6 @@ class Qianniu:
         :return:
         """
 
-        # url = 'https://loginmyseller.taobao.com/?from=&f=top&style=&sub=true&redirect_url=https%3A%2F%2Fmyseller.taobao.com%2Fhome.htm%2FQnworkbenchHome%2F'
-        # self.driver.get(url)
-
         # 切换窗口
         self.driver.switch_to.frame('alibaba-login-box')
 
@@ -111,7 +111,7 @@ class Qianniu:
             pass
 
         try:
-            error = self.driver.find_element(By.XPATH, '//*[@id="ice-container"]/div/div/div/div/div[1]/button')
+            self.driver.find_element(By.XPATH, '//*[@id="ice-container"]/div/div/div/div/div[1]/button')
             # WebDriverWait(self.driver, 10, 0.5).until(EC.visibility_of_element_located(
             #     (By.XPATH, '//*[@id="ice-container"]/div/div/div/div/div[1]/button')))
         except Exception:
@@ -164,7 +164,8 @@ class Qianniu:
             #         self.log.info(messages=f'{account}--登录成功')
             #         break
             try:
-                WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div[3]/div[3]/div/div[2]/div/div/a[1]/span')))
+                WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located(
+                    (By.XPATH, '/html/body/div[1]/div[3]/div[3]/div/div[2]/div/div/a[1]/span')))
             except Exception:
                 self.log.info(messages=f'{account}--登录失败')
                 account_state = '登录失败'
@@ -183,21 +184,22 @@ class Qianniu:
         :return:
         """
         if account_state != '正常':
-            return 0, '数据权限未开通', '订单权限未开通'
+            data_state = '数据权限未开通'
+            order_state = '订单权限未开通'
+            return 0, data_state, order_state
 
         # 等待元素加载
         page = self.driver.page_source
         # sleep(5)
         try:
-            WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div[3]/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]/div[1]/div[1]')))
+            WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located((By.XPATH,
+                                                                                         '/html/body/div[1]/div[3]/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]/div[1]/div[1]')))
         except Exception:
             self.log.info(messages=f'{account}--主页加载失败')
             data_state = '数据加载失败'
             order_state = '订单加载失败'
         else:
             self.log.info(messages=f'{account}--主页加载成功')
-            data_state = '正常'
-            order_state = '正常'
 
         # 数据权限
         try:
@@ -258,7 +260,9 @@ class Qianniu:
             self.driver.find_elements(By.CLASS_NAME, 'search-form_foldable-cursor__zLgZq')[1].click()
         except ElementClickInterceptedException:
             account_state = '账号需要二次验证'
-            return 0, '二次验证失败', '二次验证失败', account_state
+            data_state = '二次验证失败'
+            order_state = '二次验证失败'
+            return 0, data_state, order_state, account_state
         sleep(1)
         WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located((By.ID, 'paymentDate')))
         self.driver.find_element(By.ID, 'paymentDate').click()
@@ -270,8 +274,6 @@ class Qianniu:
             end_time)
         self.log.info(messages=f'{account}--筛选时间为{start_time}-{end_time}')
 
-        # 搜索
-        # self.driver.find_element(By.XPATH,'//div[@class="next-box search-form_box-button-list__+Yi18"]/button[@class="next-btn next-medium next-btn-primary"]').click()
         # 批量导出
         try:
             self.driver.find_element(By.XPATH,
