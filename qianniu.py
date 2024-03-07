@@ -186,7 +186,7 @@ class Qianniu:
         if account_state != '正常':
             data_state = '数据权限未开通'
             order_state = '订单权限未开通'
-            return 0, data_state, order_state
+            return 0, data_state, order_state, account_state
 
         # 等待元素加载
         page = self.driver.page_source
@@ -311,7 +311,7 @@ class Qianniu:
             account_state = '5分钟内只能生成一次报表'
             data_state = '5分钟内只能生成一次报表'
             order_state = '5分钟内只能生成一次报表'
-            self.log.info(messages='5分钟内只能生成一次报表')
+            self.log.info(messages=f'{account}--5分钟内只能生成一次报表')
         else:
             self.log.info(messages=f'{account}--下载报表成功')
 
