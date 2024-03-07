@@ -164,7 +164,7 @@ class Qianniu:
             #         self.log.info(messages=f'{account}--登录成功')
             #         break
             try:
-                WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located(
+                WebDriverWait(self.driver, 1200, 0.5).until(EC.visibility_of_element_located(
                     (By.XPATH, '/html/body/div[1]/div[3]/div[3]/div/div[2]/div/div/a[1]/span')))
             except Exception:
                 self.log.info(messages=f'{account}--登录失败')
