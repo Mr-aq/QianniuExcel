@@ -45,18 +45,25 @@ class Qianniu:
 
     # 下载路径
     download = ''
+    path = ''
 
     def __init__(self):
         self.driver = None
 
-    def create_driver(self, time):
+    def create_driver(self, time, account):
         """
         创建driver
         :return: driver
         """
+        account = "".join(char for char in account if char.isalnum())
+        self.path = f'{self.download}\\{account}'
+        if not os.path.exists(self.path):
+            os.makedirs(self.path)
+            self.log.info(messages=f'创建文件夹--{self.path}')
+
         chrome_options = webdriver.ChromeOptions()
-        prefs = {'profile.default_content_settings.popups': 0, 'download.default_directory': self.download}
-        self.log.info(messages=f'下载位置{self.download}')
+        prefs = {'profile.default_content_settings.popups': 0, 'download.default_directory': self.path}
+        self.log.info(messages=f'下载位置{self.path}')
         chrome_options.add_experimental_option("prefs", prefs)
         chrome_options.add_experimental_option('excludeSwitches', ['enable-automation'])
         chrome_options.add_argument('--disable-blink-features=AutomationControlled')
@@ -205,25 +212,40 @@ class Qianniu:
         try:
             # 两天金额
             yes_money = self.driver.find_elements(By.XPATH,
-                                                  '//*[@id="icestarkNode"]/div/div/div[2]/div[1]/div/div[3]/div/div[2]/div/div[1]/a/div/div/div[3]/div/span')[
-                1].text
-            tod_money = self.driver.find_elements(By.XPATH,
-                                                  '//*[@id="icestarkNode"]/div/div/div[2]/div[1]/div/div[3]/div/div[2]/div/div[1]/a/div/div/div[2]/span')
-            a = tod_money[0].text
-            b = tod_money[1].text
-            tod_money = a + b
+                                                  '//*[@id="icestarkNode"]/div/div/div[2]/div[1]/div/div[3]/div/div[2]/div/div[1]/a/div/div/div[3]/div/span[2]')
+            if not yes_money:
+                yes_money = self.driver.find_elements(By.XPATH,
+                                                      '//*[@id="icestarkNode"]/div/div/div[2]/div[1]/div/div[4]/div/div[2]/div/div[1]/a/div/div/div[3]/div/span[2]')
+            yes_money = yes_money[0].text
+            if yes_money:
+                # 处理千位
+                if ',' in yes_money:
+                    yes_money = ''.join(yes_money.split(','))
+                if '万' == yes_money[-1]:
+                    yes_money = yes_money[:-1]
+                    yes_money = float(yes_money) * 10000
 
-            # 处理千位
-            if ',' in yes_money:
-                yes_money = float(''.join(yes_money.split(',')))
-            if ',' in tod_money:
-                tod_money = float(''.join(tod_money.split(',')))
+            tod_money = self.driver.find_elements(By.XPATH,
+                                                  '//*[@id="icestarkNode"]/div/div/div[2]/div[1]/div/div[4]/div/div[2]/div/div[1]/a/div/div/div[2]/span')
+            if not tod_money:
+                tod_money = self.driver.find_elements(By.XPATH,
+                                                      '//*[@id="icestarkNode"]/div/div/div[2]/div[1]/div/div[3]/div/div[2]/div/div[1]/a/div/div/div[2]/span')
+            if tod_money:
+                a = tod_money[0].text
+                b = tod_money[1].text
+                tod_money = a + b
+
+                if ',' in tod_money:
+                    tod_money = float(''.join(tod_money.split(',')))
+                # 处理‘万’
+                if '万' == tod_money[-1].text:
+                    tod_money = tod_money * 10000
 
             data_state = '正常'
             self.log.info(messages=f'{account}--数据获取成功')
         except Exception:
-            self.log.info(messages=f'{account}--数据权限未开通')
             data_state = '数据权限未开通'
+            self.log.info(messages=f'{account}--数据权限未开通')
             yes_money = 0
             tod_money = 0
 
@@ -280,7 +302,8 @@ class Qianniu:
         self.log.info(messages=f'{account}--筛选时间为{start_time}-{end_time}')
 
         # 搜索订单
-        self.driver.find_element(By.XPATH, '//*[@id="icestarkNode"]/div/div[3]/div[2]/div/form/div/div[2]/div/button[1]').click()
+        self.driver.find_element(By.XPATH,
+                                 '//*[@id="icestarkNode"]/div/div[3]/div[2]/div/form/div/div[2]/div/button[1]').click()
         sleep(1)
         # 批量导出
         try:
@@ -349,7 +372,7 @@ class Qianniu:
 
     def multi_pro(self, time, location, account, passwd, start_time, end_time):
         # 创建实例
-        self.create_driver(time)
+        self.create_driver(time, account)
 
         # 批量登录
         account_state = self.login(account=account, passwd=passwd)
@@ -358,7 +381,7 @@ class Qianniu:
         sum_money, data_state, order_state, account_state = self.get_info(account=account, start_time=start_time,
                                                                           end_time=end_time,
                                                                           account_state=account_state)
-        self.parse_excel(filename=location, account=account, passwd=passwd, sum_money=sum_money,
+        self.parse_excel(filename=self.path, account=account, passwd=passwd, sum_money=sum_money,
                          order_state=order_state, data_state=data_state, account_state=account_state)
 
         # 关闭网页
