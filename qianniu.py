@@ -221,7 +221,7 @@ class Qianniu:
 
             data_state = '正常'
             self.log.info(messages=f'{account}--数据获取成功')
-        except:
+        except Exception:
             self.log.info(messages=f'{account}--数据权限未开通')
             data_state = '数据权限未开通'
             yes_money = 0
@@ -253,7 +253,7 @@ class Qianniu:
             self.log.info(messages=f'{account}--订单权限未开通')
             order_state = '订单权限未开通'
 
-        # 筛选
+        # 展开筛选
         WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located(
             (By.XPATH, '//*[@id="icestarkNode"]/div/div[3]/div[2]/div/form/div/div[2]/div/div[2]')))
         try:
@@ -267,13 +267,21 @@ class Qianniu:
         WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located((By.ID, 'paymentDate')))
         self.driver.find_element(By.ID, 'paymentDate').click()
         sleep(1)
+        # 筛选时间
         self.driver.find_element(By.XPATH,
                                  '//*[@id="qn-worbench-container"]/div[2]/div/div[1]/div/span[1]/input').send_keys(
             start_time)
         self.driver.find_element(By.XPATH, '//div[@class="next-range-picker-panel-input"]/span[4]/input').send_keys(
             end_time)
+        # 单击确定
+        self.driver.find_element(By.XPATH, '//*[@id="qn-worbench-container"]/div[2]/div/div[3]/button[2]').click()
+        sleep(1)
+
         self.log.info(messages=f'{account}--筛选时间为{start_time}-{end_time}')
 
+        # 搜索订单
+        self.driver.find_element(By.XPATH, '//*[@id="icestarkNode"]/div/div[3]/div[2]/div/form/div/div[2]/div/button[1]').click()
+        sleep(1)
         # 批量导出
         try:
             self.driver.find_element(By.XPATH,
