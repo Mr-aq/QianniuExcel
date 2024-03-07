@@ -287,22 +287,13 @@ class Ui_MainWindow(object):
         s_month = self.monthEdit.text() if not self.monthEdit.text() == '' else '01'
         s_day = self.dayEdit.text() if not self.dayEdit.text() == '' else '01'
 
-        # s_year = '2024'
-        # s_month = '02'
-        # s_day = '01'
-
         # 结束时间
         e_year = self.yearEdit_2.text() if not self.yearEdit_2.text() == '' else '2024'
         e_month = self.monthEdit_2.text() if not self.monthEdit_2.text() == '' else '03'
         e_day = self.dayEdit_2.text() if not self.dayEdit_2.text() == '' else '01'
 
-        # e_year = '2024'
-        # e_month = '02'
-        # e_day = '29'
-
         # 文件位置
         location = self.fileLocation.text()
-        # location = 'D:\Download'
         self.qianniu.download = location
 
         if location == '':
