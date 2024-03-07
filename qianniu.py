@@ -46,9 +46,6 @@ class Qianniu:
     # 下载路径
     download = ''
 
-    def __init__(self):
-        self.driver = None
-
     def create_driver(self, time):
         """
         创建driver
@@ -160,10 +157,20 @@ class Qianniu:
                 self.log.info(messages=f'{account}--无需验证码')
 
             # # 是否进入主页
-            # WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located(
-            #     (By.XPATH, '//*[@id="icestarkNode"]/div/div/div[2]/div[1]/div/div[1]/div/div/div/div')))
-
-
+            # while True:
+            #     title = self.driver.title
+            #     if title == '千牛商家工作台':
+            #         print(title)
+            #         self.log.info(messages=f'{account}--登录成功')
+            #         break
+            try:
+                WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div[3]/div[3]/div/div[2]/div/div/a[1]/span')))
+            except Exception:
+                self.log.info(messages=f'{account}--登录失败')
+                account_state = '登录失败'
+            else:
+                self.log.info(messages=f'{account}--登录成功')
+                account_state = '正常'
         return account_state
 
     def get_info(self, account, start_time, end_time, account_state):
@@ -181,12 +188,16 @@ class Qianniu:
         # 等待元素加载
         page = self.driver.page_source
         # sleep(5)
-        WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located(
-            (By.XPATH, '//*[@id="icestarkNode"]/div/div/div[2]/div[1]/div/div[1]/div/div/div/div')))
-        self.log.info(messages=f'{account}--登录成功')
-        self.log.info(messages=f'{account}--主页加载成功')
-        data_state = '正常'
-        order_state = '正常'
+        try:
+            WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[1]/div[3]/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]/div[1]/div[1]')))
+        except Exception:
+            self.log.info(messages=f'{account}--主页加载失败')
+            data_state = '数据加载失败'
+            order_state = '订单加载失败'
+        else:
+            self.log.info(messages=f'{account}--主页加载成功')
+            data_state = '正常'
+            order_state = '正常'
 
         # 数据权限
         try:
@@ -220,8 +231,13 @@ class Qianniu:
 
         # 交易
         sleep(2)
-        page = self.driver.page_source
-        self.driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/div[3]/div/div[2]/div/div/a[3]').click()
+        # page = self.driver.page_source
+        try:
+            self.driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/div[3]/div/div[2]/div/div/a[3]/span').click()
+        except Exception:
+            self.log.info(messages='点击交易按钮失败，正在重试')
+            sleep(2)
+            self.driver.find_element(By.XPATH, '/html/body/div[1]/div[3]/div[3]/div/div[2]/div/div/a[3]/span').click()
         sleep(5)
         page = self.driver.page_source
         # 交易权限
@@ -242,7 +258,7 @@ class Qianniu:
             self.driver.find_elements(By.CLASS_NAME, 'search-form_foldable-cursor__zLgZq')[1].click()
         except ElementClickInterceptedException:
             account_state = '账号需要二次验证'
-            return 0, '二次验证失败', '二次验证失败'
+            return 0, '二次验证失败', '二次验证失败', account_state
         sleep(1)
         WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located((By.ID, 'paymentDate')))
         self.driver.find_element(By.ID, 'paymentDate').click()
@@ -282,11 +298,14 @@ class Qianniu:
                                      '//*[@id="icestarkNode"]/div/div[2]/div[1]/div[3]/div/div/button').click()
             sleep(5)
         except Exception:
-            pass
+            account_state = '5分钟内只能生成一次报表'
+            data_state = '5分钟内只能生成一次报表'
+            order_state = '5分钟内只能生成一次报表'
+            self.log.info(messages='5分钟内只能生成一次报表')
         else:
             self.log.info(messages=f'{account}--下载报表成功')
 
-        return total_money, data_state, order_state
+        return total_money, data_state, order_state, account_state
 
     def parse_excel(self, filename, account, passwd, sum_money, account_state, order_state, data_state):
         """
@@ -326,8 +345,9 @@ class Qianniu:
         account_state = self.login(account=account, passwd=passwd)
 
         # 批量解析页面
-        sum_money, data_state, order_state = self.get_info(account=account, start_time=start_time,
-                                                           end_time=end_time, account_state=account_state)
+        sum_money, data_state, order_state, account_state = self.get_info(account=account, start_time=start_time,
+                                                                          end_time=end_time,
+                                                                          account_state=account_state)
         self.parse_excel(filename=location, account=account, passwd=passwd, sum_money=sum_money,
                          order_state=order_state, data_state=data_state, account_state=account_state)
 

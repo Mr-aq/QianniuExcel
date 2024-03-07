@@ -315,7 +315,8 @@ class Ui_MainWindow(object):
         try:
             for i in range(len(self.account)):
                 time += 5
-                p = Process(target=self.qianniu.multi_pro, args=(time, location, self.account[i], self.passwd[i], s_date, e_date))
+                p = Process(target=self.qianniu.multi_pro,
+                            args=(time, location, self.account[i], self.passwd[i], s_date, e_date))
                 p.start()
                 self.processpool.append(p)
 
@@ -324,7 +325,6 @@ class Ui_MainWindow(object):
         finally:
             self.startBtn.setText('开始采集')
             self.startBtn.setEnabled(True)
-
 
         # for i in range(len(self.account)):
         #     self.startBtn.setText('采集中...')

@@ -92,4 +92,3 @@ class Excel:
         self.log.info(messages='账号密码获取成功')
 
         return account, passwd
-
