@@ -71,15 +71,6 @@ class Excel:
 
             df = pd.DataFrame(datas)
             df.to_excel(excel_writer='订单计算.xlsx', index=False)
-            # 创建一个 ExcelWriter 对象
-            # with pd.ExcelWriter('订单计算.xlsx', engine='xlsxwriter') as w:
-            #     # 将数据框写入 Excel
-            #     df.to_excel(w, index=False, sheet_name='data')
-            #     # 获取 ExcelWriter 对象的 worksheet
-            #     ws = w.sheets['data']
-            #     # 设置列宽
-            #     ws.set_column('A:B', 30)
-            #     ws.set_column('C:H', 20)
 
         # 把数据存进表
         df_excel = pd.read_excel('订单计算.xlsx', engine='openpyxl')
