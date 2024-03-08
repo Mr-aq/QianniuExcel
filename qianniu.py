@@ -225,21 +225,26 @@ class Qianniu:
                     yes_money = yes_money[:-1]
                     yes_money = float(yes_money) * 10000
 
-            tod_money = self.driver.find_elements(By.XPATH,
+                self.log.info(messages=f'{account}--今日销售额: {yes_money}')
+
+            t_money = self.driver.find_elements(By.XPATH,
                                                   '//*[@id="icestarkNode"]/div/div/div[2]/div[1]/div/div[4]/div/div[2]/div/div[1]/a/div/div/div[2]/span')
-            if not tod_money:
-                tod_money = self.driver.find_elements(By.XPATH,
+            if not t_money:
+                t_money = self.driver.find_elements(By.XPATH,
                                                       '//*[@id="icestarkNode"]/div/div/div[2]/div[1]/div/div[3]/div/div[2]/div/div[1]/a/div/div/div[2]/span')
-            if tod_money:
-                a = tod_money[0].text
-                b = tod_money[1].text
+            tod_money = 0
+            if t_money:
+                a = t_money[0].text
+                b = t_money[1].text
                 tod_money = a + b
 
                 if ',' in tod_money:
                     tod_money = float(''.join(tod_money.split(',')))
                 # 处理‘万’
-                if '万' == tod_money[-1].text:
-                    tod_money = tod_money * 10000
+                if '万' == t_money[-1].text:
+                    tod_money = float(tod_money) * 10000
+
+                self.log.info(messages=f'{account}--今日销售额: {tod_money}')
 
             data_state = '正常'
             self.log.info(messages=f'{account}--数据获取成功')
