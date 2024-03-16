@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>627</height>
+    <height>770</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>淘宝报表解析</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="horizontalLayoutWidget">
@@ -20,7 +20,7 @@
       <x>0</x>
       <y>0</y>
       <width>491</width>
-      <height>601</height>
+      <height>741</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -50,7 +50,7 @@
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>40</y>
+      <y>10</y>
       <width>81</width>
       <height>21</height>
      </rect>
@@ -70,7 +70,7 @@
     <property name="geometry">
      <rect>
       <x>510</x>
-      <y>90</y>
+      <y>50</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -88,7 +88,7 @@
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>120</y>
+      <y>80</y>
       <width>61</width>
       <height>31</height>
      </rect>
@@ -99,14 +99,14 @@
      </font>
     </property>
     <property name="text">
-     <string/>
+     <string>2024</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
       <x>570</x>
-      <y>125</y>
+      <y>85</y>
       <width>21</width>
       <height>21</height>
      </rect>
@@ -124,7 +124,7 @@
     <property name="geometry">
      <rect>
       <x>600</x>
-      <y>120</y>
+      <y>80</y>
       <width>61</width>
       <height>31</height>
      </rect>
@@ -134,12 +134,15 @@
       <pointsize>12</pointsize>
      </font>
     </property>
+    <property name="text">
+     <string>01</string>
+    </property>
    </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
       <x>670</x>
-      <y>125</y>
+      <y>85</y>
       <width>21</width>
       <height>21</height>
      </rect>
@@ -157,7 +160,7 @@
     <property name="geometry">
      <rect>
       <x>700</x>
-      <y>120</y>
+      <y>80</y>
       <width>61</width>
       <height>31</height>
      </rect>
@@ -167,12 +170,15 @@
       <pointsize>12</pointsize>
      </font>
     </property>
+    <property name="text">
+     <string>01</string>
+    </property>
    </widget>
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
       <x>770</x>
-      <y>125</y>
+      <y>85</y>
       <width>21</width>
       <height>21</height>
      </rect>
@@ -190,7 +196,7 @@
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>215</y>
+      <y>175</y>
       <width>61</width>
       <height>31</height>
      </rect>
@@ -199,13 +205,16 @@
      <font>
       <pointsize>12</pointsize>
      </font>
+    </property>
+    <property name="text">
+     <string>2024</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="dayEdit_2">
     <property name="geometry">
      <rect>
       <x>700</x>
-      <y>215</y>
+      <y>175</y>
       <width>61</width>
       <height>31</height>
      </rect>
@@ -215,12 +224,15 @@
       <pointsize>12</pointsize>
      </font>
     </property>
+    <property name="text">
+     <string>01</string>
+    </property>
    </widget>
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
       <x>670</x>
-      <y>220</y>
+      <y>180</y>
       <width>21</width>
       <height>21</height>
      </rect>
@@ -238,7 +250,7 @@
     <property name="geometry">
      <rect>
       <x>570</x>
-      <y>220</y>
+      <y>180</y>
       <width>21</width>
       <height>21</height>
      </rect>
@@ -256,7 +268,7 @@
     <property name="geometry">
      <rect>
       <x>600</x>
-      <y>215</y>
+      <y>175</y>
       <width>61</width>
       <height>31</height>
      </rect>
@@ -266,12 +278,15 @@
       <pointsize>12</pointsize>
      </font>
     </property>
+    <property name="text">
+     <string>03</string>
+    </property>
    </widget>
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
       <x>510</x>
-      <y>185</y>
+      <y>145</y>
       <width>91</width>
       <height>21</height>
      </rect>
@@ -289,7 +304,7 @@
     <property name="geometry">
      <rect>
       <x>770</x>
-      <y>220</y>
+      <y>180</y>
       <width>21</width>
       <height>21</height>
      </rect>
@@ -307,7 +322,7 @@
     <property name="geometry">
      <rect>
       <x>570</x>
-      <y>520</y>
+      <y>680</y>
       <width>141</width>
       <height>51</height>
      </rect>
@@ -325,7 +340,7 @@
     <property name="geometry">
      <rect>
       <x>570</x>
-      <y>440</y>
+      <y>600</y>
       <width>141</width>
       <height>51</height>
      </rect>
@@ -343,7 +358,7 @@
     <property name="geometry">
      <rect>
       <x>490</x>
-      <y>280</y>
+      <y>220</y>
       <width>311</width>
       <height>16</height>
      </rect>
@@ -356,7 +371,7 @@
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>300</y>
+      <y>240</y>
       <width>81</width>
       <height>31</height>
      </rect>
@@ -376,7 +391,7 @@
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>350</y>
+      <y>280</y>
       <width>291</width>
       <height>31</height>
      </rect>
@@ -389,7 +404,180 @@
     <property name="geometry">
      <rect>
       <x>490</x>
-      <y>400</y>
+      <y>330</y>
+      <width>311</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="Chrome">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>390</y>
+      <width>91</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Chrome</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>350</y>
+      <width>61</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>浏览器</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="Chrome_Edit">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>390</y>
+      <width>191</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="Edge">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>425</y>
+      <width>91</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Edge</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="Edge_Edit">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>425</y>
+      <width>191</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="Firefox">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>460</y>
+      <width>91</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>火狐</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="QQ">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>495</y>
+      <width>91</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>QQ</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="Firefox_Edit">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>460</y>
+      <width>191</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="QQ_Edit">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>495</y>
+      <width>191</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="Chro360">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>530</y>
+      <width>91</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>360</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="Chro360_Edit">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>530</y>
+      <width>191</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="Line" name="line_3">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>580</y>
       <width>311</width>
       <height>16</height>
      </rect>

@@ -32,6 +32,9 @@ from selenium import webdriver
 from selenium.common import ElementClickInterceptedException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.webdriver.edge.service import Service as ES
+from selenium.webdriver.firefox.service import Service as FS
+from selenium.webdriver.chrome.service import Service as CS
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -50,36 +53,96 @@ class Qianniu:
     def __init__(self):
         self.driver = None
 
-    def create_driver(self, time, account):
+    # def create_driver(self, time, account):
+    #     """
+    #     创建driver
+    #     :param time: 等待时间
+    #     :param account: 账号
+    #     :return: driver
+    #     """
+    #     account = "".join(char for char in account if char.isalnum())
+    #     self.path = f'{self.download}\\{account}'
+    #     if not os.path.exists(self.path):
+    #         os.makedirs(self.path)
+    #         self.log.info(messages=f'创建文件夹--{self.path}')
+    #
+    #     chrome_options = webdriver.ChromeOptions()
+    #     prefs = {'profile.default_content_settings.popups': 0, 'download.default_directory': self.path}
+    #     self.log.info(messages=f'下载位置{self.path}')
+    #     chrome_options.add_experimental_option("prefs", prefs)
+    #     chrome_options.add_experimental_option('excludeSwitches', ['enable-automation'])
+    #     chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+    #     chrome_options.add_argument('--ignore-certificate-errors')  # 忽略CERT证书错误
+    #     chrome_options.add_argument('--ignore-ssl-errors')  # 忽略SSL错误
+    #
+    #     self.driver = webdriver.Chrome(options=chrome_options)
+    #     self.driver.set_window_position(random.randrange(10, 1000, 100), random.randrange(10, 300, 50))
+    #     # 通过浏览器的dev_tool在get页面钱将.webdriver属性改为"undefined"
+    #     self.driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+    #         "source": """Object.defineProperty(navigator, 'webdriver', {get: () => undefined})""",
+    #     })
+    #
+    #     url = 'https://loginmyseller.taobao.com/?from=&f=top&style=&sub=true&redirect_url=https%3A%2F%2Fmyseller.taobao.com%2Fhome.htm%2FQnworkbenchHome%2F'
+    #     sleep(time)
+    #     self.driver.get(url)
+
+    def get_driver(self, time, account, web_name, web_location, service):
         """
         创建driver
+        :param time: 等待时间
+        :param account: 账号
+        :param web_name: 浏览器名称
+        :param web_location: 浏览器位置
+        :param service: 浏览器驱动位置
         :return: driver
         """
+        # 创建文件夹
         account = "".join(char for char in account if char.isalnum())
         self.path = f'{self.download}\\{account}'
         if not os.path.exists(self.path):
             os.makedirs(self.path)
             self.log.info(messages=f'创建文件夹--{self.path}')
 
-        chrome_options = webdriver.ChromeOptions()
-        prefs = {'profile.default_content_settings.popups': 0, 'download.default_directory': self.path}
-        self.log.info(messages=f'下载位置{self.path}')
-        chrome_options.add_experimental_option("prefs", prefs)
-        chrome_options.add_experimental_option('excludeSwitches', ['enable-automation'])
-        chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-        chrome_options.add_argument('--ignore-certificate-errors')  # 忽略CERT证书错误
-        chrome_options.add_argument('--ignore-ssl-errors')  # 忽略SSL错误
+        if web_name == 'Edge':
+            edge_option = webdriver.EdgeOptions()
+            edge_option = self.driver_config(edge_option, web_location)
+            self.driver = webdriver.Edge(options=edge_option, service=ES(service))
+        elif web_name == 'Firefox':
+            firefox_option = webdriver.FirefoxOptions()
+            firefox_option = self.driver_config(firefox_option, web_location)
+            self.driver = webdriver.Firefox(options=firefox_option, service=FS(service))
+        else:
+            chrome_options = webdriver.ChromeOptions()
+            chrome_options = self.driver_config(chrome_options, web_location)
+            self.driver = webdriver.Chrome(options=chrome_options, service=CS(service))
 
-        self.driver = webdriver.Chrome(options=chrome_options)
+        self.log.info(messages=f'使用了{web_name}浏览器')
+
+        self.driver.set_window_size(800, 500)
         self.driver.set_window_position(random.randrange(10, 1000, 100), random.randrange(10, 300, 50))
-        # 通过浏览器的dev_tool在get页面钱将.webdriver属性改为"undefined"
-        self.driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
-            "source": """Object.defineProperty(navigator, 'webdriver', {get: () => undefined})""",
-        })
+        # 通过浏览器的dev_tool在get页面钱将webdriver属性改为"undefined"
+        if not web_name == 'Firefox':
+            self.driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+                "source": """Object.defineProperty(navigator, 'webdriver', {get: () => undefined})""",
+            })
 
         url = 'https://loginmyseller.taobao.com/?from=&f=top&style=&sub=true&redirect_url=https%3A%2F%2Fmyseller.taobao.com%2Fhome.htm%2FQnworkbenchHome%2F'
         sleep(time)
         self.driver.get(url)
+
+    def driver_config(self, options, location):
+        # 各个浏览器位置
+        options.binary_location = location
+        prefs = {'profile.default_content_settings.popups': 0, 'download.default_directory': self.path}
+        self.log.info(messages=f'下载位置{self.path}')
+        if not options.capabilities['browserName'] == 'firefox':
+            options.add_experimental_option("prefs", prefs)
+            options.add_experimental_option('excludeSwitches', ['enable-automation'])
+        options.add_argument('--disable-blink-features=AutomationControlled')
+        options.add_argument('--ignore-certificate-errors')  # 忽略CERT证书错误
+        options.add_argument('--ignore-ssl-errors')  # 忽略SSL错误
+
+        return options
 
     def login(self, account, passwd):
         """
@@ -199,7 +262,7 @@ class Qianniu:
         page = self.driver.page_source
         # sleep(5)
         try:
-            WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located((By.XPATH,
+            WebDriverWait(self.driver, 500, 0.5).until(EC.visibility_of_element_located((By.XPATH,
                                                                                          '/html/body/div[1]/div[3]/div[2]/div/div/div/div/div/div/div[2]/div[2]/div/div[1]/div/div[2]/div[1]/div[1]/div[1]')))
         except Exception:
             self.log.info(messages=f'{account}--主页加载失败')
@@ -228,10 +291,10 @@ class Qianniu:
                 self.log.info(messages=f'{account}--今日销售额: {yes_money}')
 
             t_money = self.driver.find_elements(By.XPATH,
-                                                  '//*[@id="icestarkNode"]/div/div/div[2]/div[1]/div/div[4]/div/div[2]/div/div[1]/a/div/div/div[2]/span')
+                                                '//*[@id="icestarkNode"]/div/div/div[2]/div[1]/div/div[4]/div/div[2]/div/div[1]/a/div/div/div[2]/span')
             if not t_money:
                 t_money = self.driver.find_elements(By.XPATH,
-                                                      '//*[@id="icestarkNode"]/div/div/div[2]/div[1]/div/div[3]/div/div[2]/div/div[1]/a/div/div/div[2]/span')
+                                                    '//*[@id="icestarkNode"]/div/div/div[2]/div[1]/div/div[3]/div/div[2]/div/div[1]/a/div/div/div[2]/span')
             tod_money = 0
             if t_money:
                 a = t_money[0].text
@@ -280,16 +343,23 @@ class Qianniu:
             self.log.info(messages=f'{account}--订单权限未开通')
             order_state = '订单权限未开通'
 
-        # 展开筛选
+        # 点击展开筛选
         WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located(
             (By.XPATH, '//*[@id="icestarkNode"]/div/div[3]/div[2]/div/form/div/div[2]/div/div[2]')))
         try:
             self.driver.find_elements(By.CLASS_NAME, 'search-form_foldable-cursor__zLgZq')[1].click()
         except ElementClickInterceptedException:
-            account_state = '账号需要二次验证'
-            data_state = '二次验证失败'
-            order_state = '二次验证失败'
-            return 0, data_state, order_state, account_state
+            # 等待二次验证
+            search = self.driver.find_elements(By.CLASS_NAME, 'search-form_foldable-cursor__zLgZq')[1]
+            try:
+                WebDriverWait(self.driver, 1200, 0.5).until(EC.element_to_be_clickable(search))
+            except Exception:
+                account_state = '账号需要二次验证'
+                data_state = '二次验证失败'
+                order_state = '二次验证失败'
+                return 0, data_state, order_state, account_state
+            else:
+                self.log.info(messages='账号二次验证成功')
         sleep(1)
         WebDriverWait(self.driver, 300, 0.5).until(EC.visibility_of_element_located((By.ID, 'paymentDate')))
         self.driver.find_element(By.ID, 'paymentDate').click()
@@ -375,9 +445,10 @@ class Qianniu:
         # 筛选订单
         self.excel.filter(file, account, passwd, sum_money, account_state, order_state, data_state)
 
-    def multi_pro(self, time, location, account, passwd, start_time, end_time):
+    def multi_pro(self, time, web_name, web_location, service, account, passwd, start_time, end_time):
         # 创建实例
-        self.create_driver(time, account)
+        # self.create_driver(time, account)
+        self.get_driver(time, account, web_name, web_location, service)
 
         # 批量登录
         account_state = self.login(account=account, passwd=passwd)
