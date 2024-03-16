@@ -46,8 +46,9 @@ class Qianniu:
     excel = Excel()
     log = Log()
 
-    # 下载路径
+    # 下载文件夹
     download = ''
+    # 最终下载文件夹
     path = ''
 
     def __init__(self):
@@ -105,15 +106,15 @@ class Qianniu:
 
         if web_name == 'Edge':
             edge_option = webdriver.EdgeOptions()
-            edge_option = self.driver_config(edge_option, web_location)
+            edge_option = self.driver_config(web_name, edge_option, web_location)
             self.driver = webdriver.Edge(options=edge_option, service=ES(service))
         elif web_name == 'Firefox':
             firefox_option = webdriver.FirefoxOptions()
-            firefox_option = self.driver_config(firefox_option, web_location)
+            firefox_option = self.driver_config(web_name, firefox_option, web_location)
             self.driver = webdriver.Firefox(options=firefox_option, service=FS(service))
         else:
             chrome_options = webdriver.ChromeOptions()
-            chrome_options = self.driver_config(chrome_options, web_location)
+            chrome_options = self.driver_config(web_name, chrome_options, web_location)
             self.driver = webdriver.Chrome(options=chrome_options, service=CS(service))
 
         self.log.info(messages=f'使用了{web_name}浏览器')
@@ -130,14 +131,22 @@ class Qianniu:
         sleep(time)
         self.driver.get(url)
 
-    def driver_config(self, options, location):
-        # 各个浏览器位置
-        options.binary_location = location
-        prefs = {'profile.default_content_settings.popups': 0, 'download.default_directory': self.path}
-        self.log.info(messages=f'下载位置{self.path}')
-        if not options.capabilities['browserName'] == 'firefox':
+    def driver_config(self, web_name, options, location):
+        if web_name == 'Firefox':
+            options.set_preference("browser.download.folderList", 2)
+            options.set_preference("browser.download.dir", self.path)
+            self.log.info(messages=f'{web_name}下载位置--{self.path}')
+            options.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/octet-stream")
+        else:
+            prefs = {'profile.default_content_settings.popups': 0, 'download.default_directory': self.path,
+                     'download.prompt_for_download': False}
+            self.log.info(messages=f'{web_name}下载位置--{self.path}')
             options.add_experimental_option("prefs", prefs)
             options.add_experimental_option('excludeSwitches', ['enable-automation'])
+            options.add_argument('--no-sandbox')
+
+        # 浏览器位置
+        options.binary_location = location
         options.add_argument('--disable-blink-features=AutomationControlled')
         options.add_argument('--ignore-certificate-errors')  # 忽略CERT证书错误
         options.add_argument('--ignore-ssl-errors')  # 忽略SSL错误
@@ -194,10 +203,12 @@ class Qianniu:
             # 滑动验证码
             sleep(2)
             page = self.driver.page_source
-            slider = self.driver.find_element(By.XPATH, '/html/body/center/div[1]/div/div/div/div[2]/span').text
+            self.driver.switch_to.frame('baxia-dialog-content')
+            slider = self.driver.find_element(By.XPATH, '//*[@id="nc_1__scale_text"]/span').text
             self.log.info(messages=f'{account}--出现滑动验证码')
             if slider == '向右滑动验证':
-                self.crack(slider, 390.4)
+                slider = self.driver.find_element(By.ID, 'nc_1_n1z')
+                self.crack(slider, 391)
                 # 点击登录
                 self.driver.find_element(By.XPATH, '//div[@class="fm-btn"]/button').click()
         except Exception:
@@ -477,16 +488,14 @@ class Qianniu:
         # 减速阈值
         mid = distance * 4 / 5
         # 计算间隔
-        t = 0.2
+        t = 2
         # 初速度
         v = 0
-
-        a1 = random.randint(5, 8)
 
         while current < distance:
             if current < mid:
                 # 加速度为正2
-                a = a1
+                a = 5
             else:
                 # 加速度为负3
                 a = -3
@@ -519,3 +528,4 @@ class Qianniu:
         # print(track_x, track_y)
         # 拖动滑块
         self.move_to_gap(slider, track_x, track_y)
+

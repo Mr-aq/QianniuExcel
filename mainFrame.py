@@ -429,7 +429,7 @@ class Ui_MainWindow(object):
                             args=(time, self.web_list[j], self.web_path[j], self.service[j], self.account[i], self.passwd[i], s_date, e_date))
                 p.start()
                 self.processpool.append(p)
-                time += 5
+                time += 10
                 j += 1
 
             for i in self.processpool:
@@ -474,11 +474,11 @@ class Ui_MainWindow(object):
             self.web_list.append('Firefox')
             self.web_path.append(self.Firefox_Edit.text())
             self.service.append('resources/Firefox/geckodriver.exe')
-        if self.QQ.isChecked():
-            self.web_list.append('QQ')
-            self.web_path.append(self.QQ_Edit.text())
-            self.service.append('resources/QQ/chromedriver.exe')
         if self.Chro360.isChecked():
             self.web_list.append('360')
             self.web_path.append(self.Chro360_Edit.text())
             self.service.append('resources/360/chromedriver.exe')
+        if self.QQ.isChecked():
+            self.web_list.append('QQ')
+            self.web_path.append(self.QQ_Edit.text())
+            self.service.append('resources/QQ/chromedriver.exe')
