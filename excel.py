@@ -61,22 +61,40 @@ class Excel:
             datas = {
                 '子账号': [],
                 '登录密码': [],
-                '订单数量': [],
                 '金额': [],
+                '订单数量': [],
                 '生意参谋金额': [],
-                '账号(状态)': [],
-                '订单(状态)': [],
-                '数据(状态)': []
+                '金额订单(状态)': [],
+                '生意参谋(状态)': [],
+                '账号(状态)': []
             }
 
             df = pd.DataFrame(datas)
             df.to_excel(excel_writer='订单计算.xlsx', index=False)
+            # 创建一个 ExcelWriter 对象
+            # with pd.ExcelWriter('订单计算.xlsx', engine='xlsxwriter') as w:
+            #     # 将数据框写入 Excel
+            #     df.to_excel(w, index=False, sheet_name='data')
+            #     # 获取 ExcelWriter 对象的 worksheet
+            #     ws = w.sheets['data']
+            #     # 设置列宽
+            #     ws.set_column('A:B', 30)
+            #     ws.set_column('C:H', 20)
+
         # 把数据存进表
         df_excel = pd.read_excel('订单计算.xlsx', engine='openpyxl')
         row_count = df_excel.shape[0]
 
         df_excel.loc[row_count] = data
         df_excel.to_excel(excel_writer='订单计算.xlsx', index=False)
+        with pd.ExcelWriter('订单计算.xlsx', engine='xlsxwriter') as w:
+            # 将数据框写入 Excel
+            df_excel.to_excel(w, index=False, sheet_name='data')
+            # 获取 ExcelWriter 对象的 worksheet
+            ws = w.sheets['data']
+            # 设置列宽
+            ws.set_column('A:B', 30)
+            ws.set_column('C:H', 20)
 
         self.log.info(messages=f'{data[0]}--数据存入成功')
 
